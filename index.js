@@ -1,35 +1,35 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const http = require('http'); //helps to communicate with other computers
+const fs = require('fs'); //makes changes in the server
+const path = require('path'); //allows us manauvere arond the files in the project
 
-const PORT = 3000;
-const dataFilePath = path.join(__dirname, 'anything.json');
+const PORT = 3000; //
+const dataFilePath = path.join(__dirname, 'anything.json'); //a file named "anything.json" is kept has different files
 
-const server = http.createServer((req, res) => {
-    res.setHeader('Content-Type', 'application/json');
+const server = http.createServer((req, res) => { //receiving request and making responses
+    res.setHeader('Content-Type', 'application/json'); //making all letters to be json
 
     // Log incoming requests
-    console.log(`${req.method} ${req.url}`);
+    console.log(`${req.method} ${req.url}`); //type of method and where it’s coming from (url)
 
     if (req.method === 'GET' && req.url === '/items') {
         // GET /items
-        fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        fs.readFile(dataFilePath, 'utf8', (err, data) => { // open file) and look inside
             if (err) {
                 res.writeHead(500);
-                return res.end(JSON.stringify({ error: 'Failed to read data' }));
+                return res.end(JSON.stringify({ error: 'Failed to read data' })); //an error message that lets one know taht there is something wrong
             }
             res.writeHead(200);
-            res.end(data);
+            res.end(data); //message written to us to say the list is found, as well as show the list
         });
-    } else if (req.method === 'POST' && req.url === '/items') {
+    } else if (req.method === 'POST' && req.url === '/items') { //
         // POST /items
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
+        let body = ''; //accummulates data
+        req.on('data', chunk => { //sets up an event listener for the request
+            body += chunk.toString(); //converts incoming chunk string and appends it to the body variable.
         });
         req.on('end', () => {
             try {
-                const newItem = JSON.parse(body);
+                const newItem = JSON.parse(body); //turning it from a string into something JSON, which we can use.
                 fs.readFile(dataFilePath, 'utf8', (err, data) => {
                     if (err) {
                         res.writeHead(500);
